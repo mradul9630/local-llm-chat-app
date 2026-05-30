@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Local AI Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        #chat-box {
+            height: 500px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .user,
+        .bot {
+            margin: 12px 0;
+            display: flex;
+        }
+
+        .user {
+            justify-content: flex-end;
+        }
+
+        .bot {
+            justify-content: flex-start;
+        }
+
+        .user span,
+        .bot span {
+            padding: 12px;
+            border-radius: 12px;
+            max-width: 70%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .user span {
+            background: #0078ff;
+            color: white;
+        }
+
+        .bot span {
+            background: #e9ecef;
+            color: black;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Local AI Chat</h1>
+
+        <div id="chat-box"></div>
+
+        <br>
+
+        <input type="text" id="question">
+        <button onclick="sendMessage()">Send</button>
+
+    </div>
+
+    <script>
+
+        async function sendMessage() {
+
+            const question =
+                document.getElementById("question").value;
+
+            const chatBox =
+                document.getElementById("chat-box");
+
+            chatBox.innerHTML +=
+                `<div class="user"><span>${question}</span></div>`;
+
+            const res = await fetch(
+                "http://127.0.0.1:8000/chat",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        question: question
+                    })
+                }
+            );
+
+            const data =
+                await res.json();
+
+            chatBox.innerHTML +=
+                `<div class="bot"><span>${data.response}</span></div>`;
+
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+        }
+
+    </script>
+
+</body>
+
+</html>
